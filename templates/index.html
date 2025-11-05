@@ -2,14 +2,26 @@
 <html>
 
 <head>
-  <title> Home </title>
+	<title> Home </title>
 </head>
 
 <body>
-  <h1> Home </h1>
-  <p>
-    <b> Welcome </b> to <i> Cozy Cafés</i>!
-  </p>
+	<h1> Home </h1>
+	<p>
+		<b> Welcome </b> to <i> Cozy Cafés</i>!
+	</p>
+
+	<form action="/review" method="get">
+		<input type="submit" value="Add review" />
+	</form>
+
+	<ul>
+	  {% for review in reviews %}
+		<li> {{ review }} </li>
+	  {% else %}
+		<li> No reviews yet </li>
+	  {% endfor %}
+	</ul>
 </body>
 
 </html>
