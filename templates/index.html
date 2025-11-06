@@ -15,13 +15,11 @@
 		<input type="submit" value="Add review" />
 	</form>
 
-	<ul>
-	  {% for review in reviews %}
-		<li> {{ review }} </li>
-	  {% else %}
-		<li> No reviews yet </li>
-	  {% endfor %}
-	</ul>
+	{% for review in reviews %}
+	<div> {{ review[0] }} </div>
+	{% else %}
+	<p> No reviews yet </p>
+	{% endfor %}
 </body>
 
 </html>

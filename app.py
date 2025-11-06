@@ -1,11 +1,14 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect
+import sqlite3
 
 app = Flask(__name__)
-reviews = []
 
 
 @app.route("/")
 def index():
+    db = sqlite3.connect("database.db")
+    reviews = db.execute("SELECT comment FROM Reviews").fetchall()
+    db.close()
     return render_template("index.html", reviews=reviews)
 
 
@@ -14,7 +17,12 @@ def review():
     return render_template("review.html")
 
 
-@app.route("/result", methods=["POST"])
+@app.route("/send", methods=["POST"])
 def result():
-    reviews.append(request.form["comment"])
-    return redirect(url_for("index"))
+    comment = request.form["comment"]
+
+    db = sqlite3.connect("database.db")
+    db.execute("INSERT INTO Reviews (comment) VALUES (?)", [comment])
+    db.commit()
+    db.close()
+    return redirect("/")
