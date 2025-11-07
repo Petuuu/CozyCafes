@@ -25,7 +25,7 @@ $ pip install flask
 ### Create the database
 Initialize a new SQLite database using your schema file:
 ```
-$ sqlite3 schema.sql > database.db
+$ sqlite3 database.db < schema.sql
 ```
 
 ### Run the application:
