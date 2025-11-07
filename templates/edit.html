@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Edit Review </title>
+</head>
+
+<body>
+    <h1> Edit review </h1>
+
+    <form action="/edit_item/{{ review['id'] }}" method="post">
+        <textarea id="comment" name="comment"> {{ review['comment'] }} </textarea>
+        <input type="submit" value="Submit" />
+    </form>
+
+    <form action="/delete_item/{{ review['id'] }}" method="get">
+        <input type="submit" value="Delete" />
+    </form>
+
+    <p><a href="/"> Back </a></p>
+</body>
+
+</html>

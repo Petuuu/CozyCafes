@@ -11,12 +11,16 @@
 		<b> Welcome </b> to <i> Cozy Cafés</i>!
 	</p>
 
-	<form action="/review" method="get">
+	<form action="/add_item" method="get">
 		<input type="submit" value="Add review" />
 	</form>
 
 	{% for review in reviews %}
-	<div> {{ review[0] }} </div>
+	<div>
+		<p> {{ review[1] }} </p>
+		<a href="/comments/{{ review[0] }}"> Comments </a> |
+		<a href="/edit_item/{{ review[0] }}"> Edit </a>
+	</div>
 	{% else %}
 	<p> No reviews yet </p>
 	{% endfor %}
