@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> New account </title>
+</head>
+
+<body>
+    <h1> Create new account </h1>
+
+    <form action="/create" method="post">
+        <label for="uname"> Username: </label>
+        <input type="text" id="uname" name="uname" /><br />
+        <label for="passwrd1"> Password: </label>
+        <input type="password" id="passwrd1" name="passwrd1" /><br />
+        <label for="passwrd2"> Password again: </label>
+        <input type="password" id="passwrd2" name="passwrd2" /><br />
+
+        {% if error %}
+        <p style="color: red;"> {{ error }} </p>
+        {% endif %}
+
+        <input type="submit" value="Create" />
+        <p><a href="/"> Back </a></p>
+    </form>
+</body>
+
+</html>

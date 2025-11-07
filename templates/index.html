@@ -11,6 +11,16 @@
 		<b> Welcome </b> to <i> Cozy Cafés</i>!
 	</p>
 
+	{% if session.username %}
+	<p> Signed in on user {{ session.username }} </p>
+	<p><a href="/logout"> Logout </a></p>
+	{% else %}
+	<p>
+		<a href="/create"> Create account </a> |
+		<a href="/login"> Login </a>
+	</p>
+	{% endif %}
+
 	<form action="/add_item" method="get">
 		<input type="submit" value="Add review" />
 	</form>
