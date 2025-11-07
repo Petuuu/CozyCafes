@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    r = db.execute("SELECT comment FROM Reviews")
+    r = db.query("SELECT comment FROM Reviews")
     return render_template("index.html", reviews=r)
 
 

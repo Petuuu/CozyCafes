@@ -21,7 +21,7 @@ def execute(query, params=[]):
     db.close()
 
 
-def query(query, params):
+def query(query, params=[]):
     db = get_connection()
     r = db.execute(query, params).fetchall()
     db.close()
