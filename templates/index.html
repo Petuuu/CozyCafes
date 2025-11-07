@@ -17,9 +17,9 @@
 
 	{% for review in reviews %}
 	<div>
-		<p> {{ review[1] }} </p>
-		<a href="/comments/{{ review[0] }}"> Comments </a> |
-		<a href="/edit_item/{{ review[0] }}"> Edit </a>
+		<p> {{ review['comment'] }} </p>
+		<a href="/comments/{{ review['id'] }}"> Comments </a> |
+		<a href="/edit_item/{{ review['id'] }}"> Edit </a>
 	</div>
 	{% else %}
 	<p> No reviews yet </p>
