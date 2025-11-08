@@ -1,4 +1,4 @@
-from flask import Flask, request, session, render_template, redirect
+from flask import Flask, request, session, render_template, redirect, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import db
@@ -48,11 +48,12 @@ def login():
     uname = request.form["uname"]
     passwrd = request.form["passwrd"]
 
-    query = "SELECT password_hash FROM users WHERE username = ?"
-    password_hash = db.query(query, [uname])[0][0]
+    query = db.query("SELECT id, password_hash FROM users WHERE username = ?", [uname])
+    password_hash = query[0][1]
 
     if check_password_hash(password_hash, passwrd):
-        session["username"] = uname
+        session["uname"] = uname
+        session["id"] = query[0][0]
         return redirect("/")
     else:
         return render_template("login.html", error=True)
@@ -60,7 +61,8 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["username"]
+    del session["uname"]
+    del session["id"]
     return redirect("/")
 
 
@@ -76,8 +78,11 @@ def add_item():
 
 @app.route("/edit_item/<int:id>", methods=["GET", "POST"])
 def edit_item(id):
+    r = db.query("SELECT id, comment FROM Reviews WHERE id = ?", [id])
+    if not session or r[0][0] != session["id"]:
+        abort(403)
+
     if request.method == "GET":
-        r = db.query("SELECT id, comment FROM Reviews WHERE id = ?", [id])
         return render_template("edit.html", review=r[0])
 
     edit = request.form["comment"]
