@@ -25,6 +25,10 @@
 		<input type="submit" value="Add review" />
 	</form>
 
+	{% if error %}
+        <p style="color: red;"> ERROR: must be logged in to add a review </p>
+    {% endif %}
+
 	<hr />
 
 	{% for review in reviews %}

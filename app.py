@@ -68,17 +68,23 @@ def logout():
 
 @app.route("/add_item", methods=["GET", "POST"])
 def add_item():
-    if request.method == "GET":
+    if request.method == "GET" and session:
         return render_template("review.html")
 
-    comment = request.form["comment"]
-    db.execute("INSERT INTO Reviews (comment) VALUES (?)", [comment])
-    return redirect("/")
+    if request.method == "POST":
+        comment = request.form["comment"]
+        db.execute("INSERT INTO Reviews (comment) VALUES (?)", [comment])
+        return redirect("/")
+
+    r = db.query("SELECT id, comment FROM Reviews")
+    return render_template("index.html", reviews=r, error=True)
 
 
 @app.route("/edit_item/<int:id>", methods=["GET", "POST"])
 def edit_item(id):
     r = db.query("SELECT id, comment FROM Reviews WHERE id = ?", [id])
+    if not r:
+        abort(404)
     if not session or r[0][0] != session["id"]:
         abort(403)
 
