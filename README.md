@@ -2,7 +2,7 @@
 ### *Find and review cozy cafés near you*
 
 ## Overview
-**Cozy Cafés** is a web application built with **Python Flask** that helps users discover and review cozy cafés nearby.  
+**Cozy Cafés** is a web application built with **Python Flask** that helps users discover and review cozy cafés nearby.
 Users can browse ratings, read reviews, and even contribute their own experiences.
 
 ## Features
