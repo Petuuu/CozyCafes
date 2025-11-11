@@ -33,7 +33,14 @@
 
 	{% for review in reviews %}
 	<div>
-		<p> {{ review['comment'] }} </p>
+		{% for key in review.keys() %}
+			{% if key == 'rating' %}
+			<p> {{ review[key]}}/5 </p>
+			{% elif review[key] and key != 'id' %}
+			<p> {{ review[key] }} </p>
+			{% endif %}
+		{% endfor %}
+
 		<a href="/comments/{{ review['id'] }}"> Comments </a>
 
 		{% if session.id == review.id %}

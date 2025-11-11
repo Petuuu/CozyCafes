@@ -9,7 +9,21 @@
     <h1> Add new review </h1>
 
     <form action="/add_item" method="post">
-        <textarea id="comment" name="comment" placeholder="Write review here..."></textarea>
+        <label for="cafe"> Café name: </label><br />
+        <input id="cafe" name="cafe" type="text" /><br />
+        <label for="rating"> Rating: </label><br />
+        <input id="rating" name="rating" type="range" min="1" max="5" value="3" list="rating-ticks" /><br />
+
+        <datalist id="rating-ticks">
+            <option value="1"></option>
+            <option value="2"></option>
+            <option value="3"></option>
+            <option value="4"></option>
+            <option value="5"></option>
+        </datalist>
+
+        <label for="comment"> Comment: </label><br />
+        <textarea id="comment" name="comment" placeholder="Write comment here..."></textarea><br >
 
         <input type="submit" value="Submit" />
         <p><a href="/"> Back </a></p>

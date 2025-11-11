@@ -1,6 +1,10 @@
 CREATE TABLE Reviews (
     id INTEGER PRIMARY KEY,
-    comment TEXT
+    user INTEGER,
+    cafe TEXT,
+    rating INTEGER,
+    comment TEXT,
+    FOREIGN KEY(user) REFERENCES Users(id)
 );
 
 CREATE TABLE Users (

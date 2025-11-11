@@ -10,7 +10,13 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    r = db.query("SELECT id, comment FROM Reviews")
+    r = db.query(
+        """
+        SELECT R.id, U.username, R.cafe, R.rating, R.comment
+        FROM Reviews R
+        JOIN Users U ON U.id = R.user
+        """
+    )
     return render_template("index.html", reviews=r)
 
 
@@ -48,14 +54,20 @@ def login():
     uname = request.form["uname"]
     passwrd = request.form["passwrd"]
 
-    query = db.query("SELECT id, password_hash FROM users WHERE username = ?", [uname])
-    password_hash = query[0][1]
+    try:
+        query = db.query(
+            "SELECT id, password_hash FROM users WHERE username = ?", [uname]
+        )
+        password_hash = query[0][1]
 
-    if check_password_hash(password_hash, passwrd):
-        session["uname"] = uname
-        session["id"] = query[0][0]
-        return redirect("/")
-    else:
+        if check_password_hash(password_hash, passwrd):
+            session["uname"] = uname
+            session["id"] = query[0][0]
+            return redirect("/")
+        else:
+            raise
+
+    except:
         return render_template("login.html", error=True)
 
 
@@ -72,8 +84,14 @@ def add_item():
         return render_template("review.html")
 
     if request.method == "POST":
+        cafe = request.form["cafe"]
+        rating = request.form["rating"]
         comment = request.form["comment"]
-        db.execute("INSERT INTO Reviews (comment) VALUES (?)", [comment])
+
+        db.execute(
+            "INSERT INTO Reviews (cafe, user, rating, comment) VALUES (?, ?, ?, ?)",
+            [cafe, session["id"], rating, comment],
+        )
         return redirect("/")
 
     r = db.query("SELECT id, comment FROM Reviews")
