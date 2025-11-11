@@ -10,9 +10,10 @@
 
     <form action="/login" method="post">
         <label for="uname"> Username: </label>
-        <input type="text" id="uname" name="uname" /><br />
+        <input type="text" id="uname" name="uname" required /><br />
+
         <label for="passwrd"> Password: </label>
-        <input type="password" id="passwrd" name="passwrd" /><br />
+        <input type="password" id="passwrd" name="passwrd" required /><br />
 
         {% if error %}
         <p style="color: red;"> ERROR: incorrect username or password </p>

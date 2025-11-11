@@ -10,11 +10,13 @@
 
     <form action="/create" method="post">
         <label for="uname"> Username: </label>
-        <input type="text" id="uname" name="uname" /><br />
+        <input type="text" id="uname" name="uname" required /><br />
+
         <label for="passwrd1"> Password: </label>
-        <input type="password" id="passwrd1" name="passwrd1" /><br />
+        <input type="password" id="passwrd1" name="passwrd1" required /><br />
+
         <label for="passwrd2"> Password again: </label>
-        <input type="password" id="passwrd2" name="passwrd2" /><br />
+        <input type="password" id="passwrd2" name="passwrd2" required /><br />
 
         {% if error %}
         <p style="color: red;"> {{ error }} </p>

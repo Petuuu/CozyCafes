@@ -10,7 +10,8 @@
 
     <form action="/add_item" method="post">
         <label for="cafe"> Café name: </label><br />
-        <input id="cafe" name="cafe" type="text" /><br />
+        <input id="cafe" name="cafe" type="text" required /><br />
+
         <label for="rating"> Rating: </label><br />
         <input id="rating" name="rating" type="range" min="1" max="5" value="3" list="rating-ticks" /><br />
 
