@@ -9,7 +9,6 @@
     <h1> Edit review </h1>
 
     <form action="/edit_item/{{ review['id'] }}" method="post">
-        <form action="/add_item" method="post">
         <label for="cafe"> Café name: </label><br />
         <input id="cafe" name="cafe" type="text" value="{{ review['cafe'] }}" required /><br />
 
@@ -27,11 +26,8 @@
         <label for="text"> Review text: </label><br />
         <textarea id="text" name="text" placeholder="Write text here...">{{ review['review_text'] }}</textarea><br >
 
-        <input type="submit" value="Submit" />
-    </form>
-
-    <form action="/delete_item/{{ review['id'] }}" method="get">
-        <input type="submit" value="Delete" />
+        <button type="submit" formaction="/edit_item/{{ review['id'] }}"> Submit </button>
+        <button type="submit" formaction="/delete_item/{{ review['id'] }}"> Delete </button>
     </form>
 
     <p><a href="/"> Back </a></p>

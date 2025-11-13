@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title> Search </title>
+	<link rel="stylesheet" href="../static/main.css" />
+</head>
+
+<body>
+	<h1> Search </h1>
+
+
+	<form class="search" method="post">
+        <img class="search-icon" src="static/images/search.png" alt="Search icon" />
+        <input id="query" name="query" type="text" placeholder="Search..." />
+		<button type="submit" formaction="/search"> Search </button><br />
+	</form>
+
+    <a href="/"> Back </a>
+
+	<hr />
+
+    {% if searched %}
+        <h2> Results for '{{ query }}' </h2>
+
+        <div class="review-container">
+            {% for review in reviews %}
+                <div class="review">
+                    <p class="uname"> {{ review['username'] }} </p>
+                    <p class="time"> {{ review['date_created']}} </p>
+
+                    {% if review['date_edited'] %}
+                        <p class="time"> Last edited: {{ review['date_edited'] }} </p>
+                    {% endif %}
+
+                    <hr />
+
+                    <p> Rating: {{ review['rating'] }}/5 </p>
+                    <p class="cafe"> {{ review['cafe'] }} </p>
+
+                    {% if review['review_text'] %}
+                    <div class="text">{{ review['review_text'] }}</div>
+                    {% endif %}
+
+                    <a href="/comments/{{ review['id'] }}"> Comments </a>
+
+                    {% if session['id'] == review['user'] %}
+                        | <a href="/edit_item/{{ review['id'] }}"> Edit </a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p> No reviews found </p>
+            {% endfor %}
+	    </div>
+    {% else %}
+        <h2> Results </h2>
+    {% endif %}
+</body>
+
+</html>

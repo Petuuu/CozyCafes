@@ -22,8 +22,9 @@
 		</p>
 	{% endif %}
 
-	<form action="/add_item" method="get">
-		<input type="submit" value="Add review" />
+	<form method="get">
+		<button type="submit" formaction="/add_item"> Add review </button>
+		<button type="submit" formaction="/search"> Search reviews </button>
 	</form>
 
 	{% if error %}
@@ -37,6 +38,8 @@
 	{% endwith %}
 
 	<hr />
+
+	<h2> Reviews </h2>
 
 	<div class="review-container">
 

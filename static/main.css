@@ -37,3 +37,14 @@
     margin-bottom: 1vw;
     padding-left: 0.5vw;
 }
+
+.search {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    margin: 1.5vw 0 2.5vw 0;
+}
+
+.search-icon {
+    width: 1vw;
+}

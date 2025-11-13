@@ -101,14 +101,14 @@ def add_item():
                 session["id"],
                 rating,
                 text,
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
             ],
         )
         return redirect("/")
 
     r = db.query(
         """
-        SELECT R.id, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
         FROM Reviews R
         JOIN Users U ON U.id = R.user
         """
@@ -116,23 +116,42 @@ def add_item():
     return render_template("index.html", reviews=r[::-1], error=True)
 
 
-@app.route("/edit_item/<int:id>", methods=["GET", "POST"])
-def edit_item(id):
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    if request.method == "GET":
+        return render_template("search.html")
+
+    query = request.form["query"]
     r = db.query(
         """
         SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
         FROM Reviews R
         JOIN Users U ON U.id = R.user
-        WHERE R.id = ?""",
-        [id],
+        WHERE R.date_created || ' ' || R.cafe || ' ' || R.rating || '/5 ' || R.review_text || ' ' || R.date_created LIKE ?
+        """,
+        ["%" + query + "%"],
     )
 
-    if not r:
-        abort(404)
-    if not session or r[0]["user"] != session["id"]:
-        abort(403)
+    return render_template("search.html", searched=True, reviews=r[::-1], query=query)
 
+
+@app.route("/edit_item/<int:id>", methods=["GET", "POST"])
+def edit_item(id):
     if request.method == "GET":
+        r = db.query(
+            """
+            SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
+            FROM Reviews R
+            JOIN Users U ON U.id = R.user
+            WHERE R.id = ?""",
+            [id],
+        )
+
+        if not r:
+            abort(404)
+        if not session or r[0]["user"] != session["id"]:
+            abort(403)
+
         return render_template("edit.html", review=r[0])
 
     cafe = request.form["cafe"]
@@ -145,7 +164,7 @@ def edit_item(id):
         SET cafe = ?, rating = ?, review_text = ?, date_edited = ?
         WHERE id = ?
         """,
-        [cafe, rating, text, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), id],
+        [cafe, rating, text, datetime.now().strftime("%d-%m-%Y %H:%M:%S"), id],
     )
     return redirect("/")
 
