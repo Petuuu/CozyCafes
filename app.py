@@ -12,7 +12,7 @@ app.secret_key = config.secret_key
 def index():
     r = db.query(
         """
-        SELECT R.id, U.username, R.cafe, R.rating, R.comment
+        SELECT R.id, U.username, R.cafe, R.rating, R.review_text
         FROM Reviews R
         JOIN Users U ON U.id = R.user
         """
@@ -86,21 +86,21 @@ def add_item():
     if request.method == "POST":
         cafe = request.form["cafe"]
         rating = request.form["rating"]
-        comment = request.form["comment"]
+        text = request.form["text"]
 
         db.execute(
-            "INSERT INTO Reviews (cafe, user, rating, comment) VALUES (?, ?, ?, ?)",
-            [cafe, session["id"], rating, comment],
+            "INSERT INTO Reviews (cafe, user, rating, review_text) VALUES (?, ?, ?, ?)",
+            [cafe, session["id"], rating, text],
         )
         return redirect("/")
 
-    r = db.query("SELECT id, comment FROM Reviews")
+    r = db.query("SELECT id, review_text FROM Reviews")
     return render_template("index.html", reviews=r, error=True)
 
 
 @app.route("/edit_item/<int:id>", methods=["GET", "POST"])
 def edit_item(id):
-    r = db.query("SELECT id, comment FROM Reviews WHERE id = ?", [id])
+    r = db.query("SELECT id, review_text FROM Reviews WHERE id = ?", [id])
     if not r:
         abort(404)
     if not session or r[0][0] != session["id"]:
@@ -109,8 +109,8 @@ def edit_item(id):
     if request.method == "GET":
         return render_template("edit.html", review=r[0])
 
-    edit = request.form["comment"]
-    db.execute("UPDATE Reviews SET comment = ? where id = ?", [edit, id])
+    edit = request.form["text"]
+    db.execute("UPDATE Reviews SET review_text = ? where id = ?", [edit, id])
     return redirect("/")
 
 

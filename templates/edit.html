@@ -9,7 +9,7 @@
     <h1> Edit review </h1>
 
     <form action="/edit_item/{{ review['id'] }}" method="post">
-        <textarea id="comment" name="comment"> {{ review['comment'] }} </textarea>
+        <textarea id="text" name="text"> {{ review['text'] }} </textarea>
         <input type="submit" value="Submit" />
     </form>
 

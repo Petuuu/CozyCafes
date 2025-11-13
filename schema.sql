@@ -3,7 +3,7 @@ CREATE TABLE Reviews (
     user INTEGER,
     cafe TEXT,
     rating INTEGER,
-    comment TEXT,
+    review_text TEXT,
     FOREIGN KEY(user) REFERENCES Users(id)
 );
 

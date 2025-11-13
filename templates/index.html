@@ -36,7 +36,7 @@
 		<p> Rating: {{ review['rating'] }}/5</p>
 
 		{% for key in review.keys() %}
-			{% if key in ('cafe', 'comment', 'username') and review[key] %}
+			{% if key in ('cafe', 'text', 'username') and review[key] %}
 				<p> {{ review[key] }} </p>
 			{% endif %}
 		{% endfor %}
