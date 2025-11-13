@@ -30,6 +30,12 @@
         <p style="color: red;"> ERROR: must be logged in to add a review </p>
     {% endif %}
 
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<p><em> {{ messages[0] }} </em></p>
+		{% endif %}
+	{% endwith %}
+
 	<hr />
 
 	<div class="review-container">

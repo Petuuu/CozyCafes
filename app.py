@@ -1,4 +1,4 @@
-from flask import Flask, request, session, render_template, redirect, abort
+from flask import Flask, request, session, render_template, redirect, abort, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import db
@@ -43,6 +43,7 @@ def create():
     except sqlite3.IntegrityError:
         return render_template("create.html", error="ERROR: username already exists")
 
+    flash("Account successfully created")
     return redirect("/")
 
 
@@ -114,6 +115,7 @@ def edit_item(id):
         WHERE R.id = ?""",
         [id],
     )
+
     if not r:
         abort(404)
     if not session or r[0]["user"] != session["id"]:
