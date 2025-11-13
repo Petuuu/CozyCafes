@@ -1,7 +1,6 @@
 .review-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
 }
 
 .review {
@@ -22,6 +21,7 @@
 .text {
     overflow: auto;
     overflow-wrap: break-word;
+    white-space: pre-wrap;
 
     height: 5vw;
     margin-bottom: 1vw;

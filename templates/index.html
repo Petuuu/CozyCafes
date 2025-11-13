@@ -41,26 +41,26 @@
 	<div class="review-container">
 
 		{% for review in reviews %}
-		<div class="review">
-			<p><em> {{ review['username'] }} </em></p>
+			<div class="review">
+				<p><em> {{ review['username'] }} </em></p>
 
-			<hr />
+				<hr />
 
-			<p> Rating: {{ review['rating'] }}/5</p>
-			<p class="cafe"> {{ review['cafe'] }} </p>
+				<p> Rating: {{ review['rating'] }}/5 </p>
+				<p class="cafe"> {{ review['cafe'] }} </p>
 
-			{% if review['review_text'] %}
-			<div class="text"> {{ review['review_text'] }} </div>
-			{% endif %}
+				{% if review['review_text'] %}
+				<div class="text">{{ review['review_text'] }}</div>
+				{% endif %}
 
-			<a href="/comments/{{ review['id'] }}"> Comments </a>
+				<a href="/comments/{{ review['id'] }}"> Comments </a>
 
-			{% if session['id'] == review['user'] %}
-				| <a href="/edit_item/{{ review['id'] }}"> Edit </a>
-			{% endif %}
-		</div>
+				{% if session['id'] == review['user'] %}
+					| <a href="/edit_item/{{ review['id'] }}"> Edit </a>
+				{% endif %}
+			</div>
 		{% else %}
-		<p> No reviews yet </p>
+			<p> No reviews yet </p>
 		{% endfor %}
 
 	</div>
