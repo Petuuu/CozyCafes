@@ -17,7 +17,7 @@ def index():
         JOIN Users U ON U.id = R.user
         """
     )
-    return render_template("index.html", reviews=r)
+    return render_template("index.html", reviews=r[::-1])
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -102,7 +102,7 @@ def add_item():
         JOIN Users U ON U.id = R.user
         """
     )
-    return render_template("index.html", reviews=r, error=True)
+    return render_template("index.html", reviews=r[::-1], error=True)
 
 
 @app.route("/edit_item/<int:id>", methods=["GET", "POST"])
