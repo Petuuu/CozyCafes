@@ -13,6 +13,16 @@
     width: 19vw;
 }
 
+.uname {
+    font-size: 1.1vw;
+    font-style: italic;
+}
+
+.time {
+    font-size: 0.9vw;
+    line-height: 0.4vw;
+}
+
 .cafe {
     font-size: 1.2vw;
     font-weight: bold;

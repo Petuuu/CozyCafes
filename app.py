@@ -1,5 +1,6 @@
 from flask import Flask, request, session, render_template, redirect, abort, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 import sqlite3
 import db
 import config
@@ -12,7 +13,7 @@ app.secret_key = config.secret_key
 def index():
     r = db.query(
         """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
         FROM Reviews R
         JOIN Users U ON U.id = R.user
         """
@@ -90,14 +91,24 @@ def add_item():
         text = request.form["text"]
 
         db.execute(
-            "INSERT INTO Reviews (cafe, user, rating, review_text) VALUES (?, ?, ?, ?)",
-            [cafe, session["id"], rating, text],
+            """
+            INSERT INTO
+            Reviews (cafe, user, rating, review_text, date_created)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            [
+                cafe,
+                session["id"],
+                rating,
+                text,
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            ],
         )
         return redirect("/")
 
     r = db.query(
         """
-        SELECT R.id, U.username, R.cafe, R.rating, R.review_text
+        SELECT R.id, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
         FROM Reviews R
         JOIN Users U ON U.id = R.user
         """
@@ -109,7 +120,7 @@ def add_item():
 def edit_item(id):
     r = db.query(
         """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
         FROM Reviews R
         JOIN Users U ON U.id = R.user
         WHERE R.id = ?""",
@@ -129,8 +140,12 @@ def edit_item(id):
     text = request.form["text"]
 
     db.execute(
-        "UPDATE Reviews SET cafe = ?, rating = ?, review_text = ? where id = ?",
-        [cafe, rating, text, id],
+        """
+        UPDATE Reviews
+        SET cafe = ?, rating = ?, review_text = ?, date_edited = ?
+        WHERE id = ?
+        """,
+        [cafe, rating, text, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), id],
     )
     return redirect("/")
 

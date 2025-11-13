@@ -42,7 +42,12 @@
 
 		{% for review in reviews %}
 			<div class="review">
-				<p><em> {{ review['username'] }} </em></p>
+				<p class="uname"> {{ review['username'] }} </p>
+				<p class="time"> {{ review['date_created']}} </p>
+
+				{% if review['date_edited'] %}
+					<p class="time"> Last edited: {{ review['date_edited'] }} </p>
+				{% endif %}
 
 				<hr />
 

@@ -4,6 +4,8 @@ CREATE TABLE Reviews (
     cafe TEXT,
     rating INTEGER,
     review_text TEXT,
+    date_created TEXT,
+    date_edited TEXT,
     FOREIGN KEY(user) REFERENCES Users(id)
 );
 
