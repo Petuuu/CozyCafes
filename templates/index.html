@@ -3,6 +3,7 @@
 
 <head>
 	<title> Home </title>
+	<link rel="stylesheet" href="../static/main.css" />
 </head>
 
 <body>
@@ -30,25 +31,33 @@
     {% endif %}
 
 	<hr />
-	{% for review in reviews %}
-	<div>
-		<p> Rating: {{ review['rating'] }}/5</p>
 
-		{% for key in review.keys() %}
-			{% if key in ('cafe', 'review_text', 'username') and review[key] %}
-				<p> {{ review[key] }} </p>
+	<div class="review-container">
+
+		{% for review in reviews %}
+		<div class="review">
+			<p><em> {{ review['username'] }} </em></p>
+
+			<hr />
+
+			<p> Rating: {{ review['rating'] }}/5</p>
+			<p class="cafe"> {{ review['cafe'] }} </p>
+
+			{% if review['review_text'] %}
+			<div class="text"> {{ review['review_text'] }} </div>
 			{% endif %}
+
+			<a href="/comments/{{ review['id'] }}"> Comments </a>
+
+			{% if session['id'] == review['user'] %}
+				| <a href="/edit_item/{{ review['id'] }}"> Edit </a>
+			{% endif %}
+		</div>
+		{% else %}
+		<p> No reviews yet </p>
 		{% endfor %}
 
-		<a href="/comments/{{ review['id'] }}"> Comments </a>
-
-		{% if session['id'] == review['user'] %}
-			| <a href="/edit_item/{{ review['id'] }}"> Edit </a>
-		{% endif %}
 	</div>
-	{% else %}
-	<p> No reviews yet </p>
-	{% endfor %}
 </body>
 
 </html>
