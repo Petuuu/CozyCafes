@@ -108,7 +108,7 @@ def add_item():
 def edit_item(id):
     r = db.query(
         """
-        SELECT R.id, U.username, R.cafe, R.rating, R.review_text
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text
         FROM Reviews R
         JOIN Users U ON U.id = R.user
         WHERE R.id = ?""",
@@ -116,7 +116,7 @@ def edit_item(id):
     )
     if not r:
         abort(404)
-    if not session or r[0]["id"] != session["id"]:
+    if not session or r[0]["user"] != session["id"]:
         abort(403)
 
     if request.method == "GET":
