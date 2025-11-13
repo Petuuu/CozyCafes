@@ -9,7 +9,24 @@
     <h1> Edit review </h1>
 
     <form action="/edit_item/{{ review['id'] }}" method="post">
-        <textarea id="text" name="text"> {{ review['text'] }} </textarea>
+        <form action="/add_item" method="post">
+        <label for="cafe"> Café name: </label><br />
+        <input id="cafe" name="cafe" type="text" value="{{ review['cafe'] }}" required /><br />
+
+        <label for="rating"> Rating: </label><br />
+        <input id="rating" name="rating" type="range" min="1" max="5" value="{{ review['rating'] }}" list="rating-ticks" /><br />
+
+        <datalist id="rating-ticks">
+            <option value="1"></option>
+            <option value="2"></option>
+            <option value="3"></option>
+            <option value="4"></option>
+            <option value="5"></option>
+        </datalist>
+
+        <label for="text"> Review text: </label><br />
+        <textarea id="text" name="text" placeholder="Write text here..."> {{ review['review_text']}} </textarea><br >
+
         <input type="submit" value="Submit" />
     </form>
 

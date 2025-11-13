@@ -30,20 +30,19 @@
     {% endif %}
 
 	<hr />
-
 	{% for review in reviews %}
 	<div>
 		<p> Rating: {{ review['rating'] }}/5</p>
 
 		{% for key in review.keys() %}
-			{% if key in ('cafe', 'text', 'username') and review[key] %}
+			{% if key in ('cafe', 'review_text', 'username') and review[key] %}
 				<p> {{ review[key] }} </p>
 			{% endif %}
 		{% endfor %}
 
 		<a href="/comments/{{ review['id'] }}"> Comments </a>
 
-		{% if session.id == review['id'] %}
+		{% if session['id'] == review['user'] %}
 			| <a href="/edit_item/{{ review['id'] }}"> Edit </a>
 		{% endif %}
 	</div>

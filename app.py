@@ -12,7 +12,7 @@ app.secret_key = config.secret_key
 def index():
     r = db.query(
         """
-        SELECT R.id, U.username, R.cafe, R.rating, R.review_text
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text
         FROM Reviews R
         JOIN Users U ON U.id = R.user
         """
@@ -94,23 +94,42 @@ def add_item():
         )
         return redirect("/")
 
-    r = db.query("SELECT id, review_text FROM Reviews")
+    r = db.query(
+        """
+        SELECT R.id, U.username, R.cafe, R.rating, R.review_text
+        FROM Reviews R
+        JOIN Users U ON U.id = R.user
+        """
+    )
     return render_template("index.html", reviews=r, error=True)
 
 
 @app.route("/edit_item/<int:id>", methods=["GET", "POST"])
 def edit_item(id):
-    r = db.query("SELECT id, review_text FROM Reviews WHERE id = ?", [id])
+    r = db.query(
+        """
+        SELECT R.id, U.username, R.cafe, R.rating, R.review_text
+        FROM Reviews R
+        JOIN Users U ON U.id = R.user
+        WHERE R.id = ?""",
+        [id],
+    )
     if not r:
         abort(404)
-    if not session or r[0][0] != session["id"]:
+    if not session or r[0]["id"] != session["id"]:
         abort(403)
 
     if request.method == "GET":
         return render_template("edit.html", review=r[0])
 
-    edit = request.form["text"]
-    db.execute("UPDATE Reviews SET review_text = ? where id = ?", [edit, id])
+    cafe = request.form["cafe"]
+    rating = request.form["rating"]
+    text = request.form["text"]
+
+    db.execute(
+        "UPDATE Reviews SET cafe = ?, rating = ?, review_text = ? where id = ?",
+        [cafe, rating, text, id],
+    )
     return redirect("/")
 
 
