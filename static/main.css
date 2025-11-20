@@ -41,7 +41,7 @@
 .rating {
     display: flex;
     justify-content: space-between;
-    width: 8em;
+    width: 4vw;
 }
 
 .search {

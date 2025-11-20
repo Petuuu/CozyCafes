@@ -8,9 +8,9 @@
 <body>
     <h1> Add new review </h1>
 
-    <form action="/add_item" method="post">
+    <form class="reviewForm" action="/add_item" method="post">
         <label for="cafe"> Café name: </label><br />
-        <input id="cafe" name="cafe" type="text" required /><br />
+        <input id="cafe" name="cafe" type="text" required /><br /><br />
 
         <label for="rating"> Rating: </label><br />
         <input id="rating" name="rating" type="range" min="1" max="5" value="3" list="rating-ticks" /><br />
@@ -22,16 +22,16 @@
             <option value="4"></option>
             <option value="5"></option>
         </datalist>
-        <div class="rating">
+        <div class="gap rating">
             <span> 1 </span>
             <span> 2 </span>
             <span> 3 </span>
             <span> 4 </span>
             <span> 5 </span>
-        </div>
+        </div><br />
 
         <label for="text"> Review text: </label><br />
-        <textarea id="text" name="text" placeholder="Write text here..."></textarea><br >
+        <textarea id="text" name="text" rows="10" cols="40" placeholder="Write text here..."></textarea><br /><br />
 
         <input type="submit" value="Submit" />
         <p><a href="/"> Back </a></p>
