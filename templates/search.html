@@ -24,28 +24,28 @@
         <h2> Results for '{{ query }}' </h2>
 
         <div class="review-container">
-            {% for review in reviews %}
+            {% for r in reviews %}
                 <div class="review">
-                    <p class="uname"> {{ review['username'] }} </p>
-                    <p class="time"> {{ review['date_created']}} </p>
+                    <p class="uname"><a href="/profile/{{ r['user']}}"> {{ r['username'] }} </a></p>
+                    <p class="time"> {{ r['date_created']}} </p>
 
-                    {% if review['date_edited'] %}
-                        <p class="time"> Last edited: {{ review['date_edited'] }} </p>
+                    {% if r['date_edited'] %}
+                        <p class="time"> Last edited: {{ r['date_edited'] }} </p>
                     {% endif %}
 
                     <hr />
 
-                    <p> Rating: {{ review['rating'] }}/5 </p>
-                    <p class="cafe"> {{ review['cafe'] }} </p>
+                    <p> Rating: {{ r['rating'] }}/5 </p>
+                    <p class="cafe"> {{ r['cafe'] }} </p>
 
-                    {% if review['review_text'] %}
-                    <div class="text">{{ review['review_text'] }}</div>
+                    {% if r['review_text'] %}
+                    <div class="text">{{ r['review_text'] }}</div>
                     {% endif %}
 
-                    <a href="/comments/{{ review['id'] }}"> Comments </a>
+                    <a href="/comments/{{ r['id'] }}"> Comments </a>
 
-                    {% if session['id'] == review['user'] %}
-                        | <a href="/edit_item/{{ review['id'] }}"> Edit </a>
+                    {% if session['id'] == r['user'] %}
+                        | <a href="/edit_item/{{ r['id'] }}"> Edit </a>
                     {% endif %}
                 </div>
             {% else %}

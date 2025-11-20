@@ -9,12 +9,12 @@
 <body>
     <h1> Edit review </h1>
 
-    <form action="/edit_item/{{ review['id'] }}" method="post">
+    <form action="/edit_item/{{ r['id'] }}" method="post">
         <label class="gap" for="cafe"> Café name: </label><br />
-        <input id="cafe" name="cafe" type="text" value="{{ review['cafe'] }}" required /><br /><br />
+        <input id="cafe" name="cafe" type="text" value="{{ r['cafe'] }}" required /><br /><br />
 
         <label for="rating"> Rating: </label><br />
-        <input id="rating" name="rating" type="range" min="1" max="5" value="{{ review['rating'] }}" list="rating-ticks" /><br />
+        <input id="rating" name="rating" type="range" min="1" max="5" value="{{ r['rating'] }}" list="rating-ticks" /><br />
 
         <datalist id="rating-ticks">
             <option value="1"></option>
@@ -32,10 +32,10 @@
         </div><br />
 
         <label for="text"> Review text: </label><br />
-        <textarea id="text" name="text" rows="10" cols="40" placeholder="Write text here...">{{ review['review_text'] }}</textarea><br ><br />
+        <textarea id="text" name="text" rows="10" cols="40" placeholder="Write text here...">{{ r['review_text'] }}</textarea><br ><br />
 
-        <button type="submit" formaction="/edit_item/{{ review['id'] }}"> Submit </button>
-        <button type="submit" formaction="/delete_item/{{ review['id'] }}"> Delete </button>
+        <button type="submit" formaction="/edit_item/{{ r['id'] }}"> Submit </button>
+        <button type="submit" formaction="/delete_item/{{ r['id'] }}"> Delete </button>
     </form>
 
     <p><a href="/"> Back </a></p>

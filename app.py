@@ -4,22 +4,25 @@ from datetime import datetime
 import sqlite3
 import config
 import db
-import reviews
+import queries
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
 
-def check_exists_and_allowed(r):
+def check_exists(r):
     if not r:
         abort(404)
+
+
+def check_allowed(r):
     if session and r[0] == session["id"]:
         abort(403)
 
 
 @app.route("/")
 def index():
-    r = reviews.search_reviews()
+    r = queries.search_reviews()
     return render_template("index.html", reviews=r)
 
 
@@ -77,8 +80,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["uname"]
-    del session["id"]
+    session.clear()
     return redirect("/")
 
 
@@ -108,7 +110,7 @@ def add_item():
         )
         return redirect("/")
 
-    r = reviews.search_reviews()
+    r = queries.search_reviews()
     return render_template("index.html", reviews=r, error=True)
 
 
@@ -119,15 +121,24 @@ def search():
 
     query = request.form["query"]
     r = search(query)
-    return render_template("search.html", searched=True, reviews=r[::-1], query=query)
+    return render_template("search.html", searched=True, reviews=r, query=query)
+
+
+@app.route("/profile/<int:user>")
+def profile(user):
+    u = queries.fetch_user(user)
+    check_exists(u)
+    r = queries.search_user_reviews(user)
+    return render_template("user.html", u=u[0], reviews=r, c=len(r))
 
 
 @app.route("/edit_item/<int:id>", methods=["GET", "POST"])
 def edit_item(id):
     if request.method == "GET":
-        r = reviews.fetch_review(id)
-        check_exists_and_allowed(r)
-        return render_template("edit.html", review=r[0])
+        r = queries.fetch_review(id)
+        check_exists(r)
+        check_allowed(r)
+        return render_template("edit.html", r=r[0])
 
     cafe = request.form["cafe"]
     rating = request.form["rating"]
