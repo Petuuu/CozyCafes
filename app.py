@@ -2,23 +2,25 @@ from flask import Flask, request, session, render_template, redirect, abort, fla
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import sqlite3
-import db
 import config
+import db
+import reviews
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
 
+def check_exists_and_allowed(r):
+    if not r:
+        abort(404)
+    if session and r[0] == session["id"]:
+        abort(403)
+
+
 @app.route("/")
 def index():
-    r = db.query(
-        """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
-        FROM Reviews R
-        JOIN Users U ON U.id = R.user
-        """
-    )
-    return render_template("index.html", reviews=r[::-1])
+    r = reviews.search_reviews()
+    return render_template("index.html", reviews=r)
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -106,14 +108,8 @@ def add_item():
         )
         return redirect("/")
 
-    r = db.query(
-        """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
-        FROM Reviews R
-        JOIN Users U ON U.id = R.user
-        """
-    )
-    return render_template("index.html", reviews=r[::-1], error=True)
+    r = reviews.search_reviews()
+    return render_template("index.html", reviews=r, error=True)
 
 
 @app.route("/search", methods=["GET", "POST"])
@@ -122,36 +118,15 @@ def search():
         return render_template("search.html")
 
     query = request.form["query"]
-    r = db.query(
-        """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
-        FROM Reviews R
-        JOIN Users U ON U.id = R.user
-        WHERE R.date_created || ' ' || R.cafe || ' ' || R.rating || '/5 ' || R.review_text || ' ' || R.date_created LIKE ?
-        """,
-        ["%" + query + "%"],
-    )
-
+    r = search(query)
     return render_template("search.html", searched=True, reviews=r[::-1], query=query)
 
 
 @app.route("/edit_item/<int:id>", methods=["GET", "POST"])
 def edit_item(id):
     if request.method == "GET":
-        r = db.query(
-            """
-            SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
-            FROM Reviews R
-            JOIN Users U ON U.id = R.user
-            WHERE R.id = ?""",
-            [id],
-        )
-
-        if not r:
-            abort(404)
-        if not session or r[0]["user"] != session["id"]:
-            abort(403)
-
+        r = reviews.fetch_review(id)
+        check_exists_and_allowed(r)
         return render_template("edit.html", review=r[0])
 
     cafe = request.form["cafe"]
@@ -169,7 +144,7 @@ def edit_item(id):
     return redirect("/")
 
 
-@app.route("/delete_item/<int:review_id>")
+@app.route("/delete_item/<int:review_id>", methods=["POST"])
 def delete_item(review_id):
     db.execute("DELETE FROM Reviews WHERE id = ?", [review_id])
     return redirect("/")

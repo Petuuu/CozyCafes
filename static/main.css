@@ -38,6 +38,12 @@
     padding-left: 0.5vw;
 }
 
+.rating {
+    display: flex;
+    justify-content: space-between;
+    width: 8em;
+}
+
 .search {
     display: flex;
     align-items: center;
