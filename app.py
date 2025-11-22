@@ -86,32 +86,28 @@ def logout():
 
 @app.route("/add_item", methods=["GET", "POST"])
 def add_item():
-    if request.method == "GET" and session:
+    if request.method == "GET":
         return render_template("review.html")
 
-    if request.method == "POST":
-        cafe = request.form["cafe"]
-        rating = request.form["rating"]
-        text = request.form["text"]
+    cafe = request.form["cafe"]
+    rating = request.form["rating"]
+    text = request.form["text"]
 
-        db.execute(
-            """
-            INSERT INTO
-            Reviews (cafe, user, rating, review_text, date_created)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            [
-                cafe,
-                session["id"],
-                rating,
-                text,
-                datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
-            ],
-        )
-        return redirect("/")
-
-    r = queries.search_reviews()
-    return render_template("index.html", reviews=r, error=True)
+    db.execute(
+        """
+        INSERT INTO
+        Reviews (cafe, user, rating, review_text, date_created)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        [
+            cafe,
+            session["id"],
+            rating,
+            text,
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+        ],
+    )
+    return redirect("/")
 
 
 @app.route("/search", methods=["GET", "POST"])
@@ -124,12 +120,31 @@ def search():
     return render_template("search.html", searched=True, reviews=r, query=query)
 
 
+@app.route("/add_image", methods=["POST"])
+def image():
+    f = request.files["image"]
+    if not f.filename.endswith(".jpg"):
+        return profile(session["id"], error="ERROR: incorrect file type")
+
+    image = f.read()
+    if len(image) > 100 * 1024:
+        return profile(session["id"], error="ERROR: image too large")
+
+    db.execute("UPDATE Users SET pfp = ? WHERE id = ?", [image, session["id"]])
+    return profile(session["id"])
+
+
+@app.route("/image/<int:user>")
+def show_image(user):
+    pass
+
+
 @app.route("/profile/<int:user>")
-def profile(user):
+def profile(user, error=None):
     u = queries.fetch_user(user)
     check_exists(u)
     r = queries.search_user_reviews(user)
-    return render_template("user.html", u=u[0], reviews=r, c=len(r))
+    return render_template("profile.html", u=u[0], reviews=r, c=len(r), error=error)
 
 
 @app.route("/edit_item/<int:id>", methods=["GET", "POST"])

@@ -12,5 +12,6 @@ CREATE TABLE Reviews (
 CREATE TABLE Users (
     id INTEGER PRIMARY KEY,
     username TEXT UNIQUE,
-    password_hash TEXT
+    password_hash TEXT,
+    pfp BLOB
 );

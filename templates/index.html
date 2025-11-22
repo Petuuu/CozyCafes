@@ -12,24 +12,27 @@
 		<b> Welcome </b> to <i> Cozy Cafés</i>!
 	</p>
 
-	{% if session.uname %}
-		<p> Signed in on user {{ session.uname }} </p>
-		<p><a href="/logout"> Logout </a></p>
+	{% if session %}
+		<p> Signed in on user {{ session["uname"] }} </p>
+		<p>
+			<a href="/logout"> Logout </a> |
+			<a href="/profile/{{ session.id }}"> Profile </a>
+		</p>
+
+		<form method="get">
+			<button type="submit" formaction="/add_item"> Add review </button>
+			<button type="submit" formaction="/search"> Search reviews </button>
+		</form>
 	{% else %}
 		<p>
 			<a href="/create"> Create account </a> |
 			<a href="/login"> Login </a>
 		</p>
+
+		<form method="get">
+			<button type="submit" formaction="/search"> Search reviews </button>
+		</form>
 	{% endif %}
-
-	<form method="get">
-		<button type="submit" formaction="/add_item"> Add review </button>
-		<button type="submit" formaction="/search"> Search reviews </button>
-	</form>
-
-	{% if error %}
-        <p style="color: red;"> ERROR: must be logged in to add a review </p>
-    {% endif %}
 
 	{% with messages = get_flashed_messages() %}
 		{% if messages %}
@@ -45,7 +48,7 @@
 
 		{% for r in reviews %}
 			<div class="review">
-				<p class="uname"><a href="/user/{{ r['user']}}"> {{ r['username'] }} </a></p>
+				<p class="uname"><a href="/profile/{{ r['user']}}"> {{ r['username'] }} </a></p>
 				<p class="time"> {{ r['date_created']}} </p>
 
 				{% if r['date_edited'] %}
