@@ -1,6 +1,7 @@
 from flask import Flask, request, session, render_template, redirect, abort, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from secrets import token_hex
 import sqlite3
 import config
 import db
@@ -16,7 +17,12 @@ def check_exists(r):
 
 
 def check_allowed(r):
-    if session and r[0] == session["id"]:
+    if not session or r[0]["user"] != session["id"]:
+        abort(403)
+
+
+def check_csrf():
+    if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
 
 
@@ -70,6 +76,7 @@ def login():
         if check_password_hash(password_hash, passwrd):
             session["uname"] = uname
             session["id"] = query[0][0]
+            session["csrf_token"] = token_hex(16)
             return redirect("/")
         else:
             raise
@@ -89,6 +96,7 @@ def add_item():
     if request.method == "GET":
         return render_template("review.html")
 
+    check_csrf()
     cafe = request.form["cafe"]
     rating = request.form["rating"]
     text = request.form["text"]

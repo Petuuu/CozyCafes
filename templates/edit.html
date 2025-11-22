@@ -10,6 +10,8 @@
     <h1> Edit review </h1>
 
     <form action="/edit_item/{{ r['id'] }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}" />
+
         <label class="gap" for="cafe"> Café name: </label><br />
         <input id="cafe" name="cafe" type="text" value="{{ r['cafe'] }}" required /><br /><br />
 
