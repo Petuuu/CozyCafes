@@ -16,9 +16,13 @@
         <p> Review was given {{ reviews[0]["date_created"] }} </p>
     {% else %}
         <p> User has shared {{ c }} reviews </p>
-        <p> First review was given {{ reviews[0]["date_created"] }} </p>
-        <p> Last review was given {{ reviews[-1]["date_created"] }} </p>
+        <p> First review was given {{ reviews[-1]["date_created"] }} </p>
+        <p> Last review was given {{ reviews[0]["date_created"] }} </p>
     {% endif %}
+
+	{% if u["pfp"] %}
+		<br /><img src="/image/{{ u['id'] }}" alt="Profile picture" height="400vw" width="auto" />
+	{% endif %}
 
 	{% if session and u["id"] == session["id"] %}
 		<br /><p> Add a jpg file (max size 100 kB) </p>

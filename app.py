@@ -1,7 +1,16 @@
-from flask import Flask, request, session, render_template, redirect, abort, flash
+from flask import (
+    Flask,
+    request,
+    session,
+    render_template,
+    redirect,
+    abort,
+    flash,
+    make_response,
+)
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
 from secrets import token_hex
+from datetime import datetime
 import sqlite3
 import config
 import db
@@ -144,7 +153,13 @@ def image():
 
 @app.route("/image/<int:user>")
 def show_image(user):
-    pass
+    r = db.query("SELECT pfp FROM Users WHERE id = ?", [user])
+    if not r or r[0]["pfp"] is None:
+        abort(404)
+
+    response = make_response(r[0]["pfp"])
+    response.headers.set("Content-Type", "image/jpeg")
+    return response
 
 
 @app.route("/profile/<int:user>")
