@@ -133,7 +133,7 @@ def search():
         return render_template("search.html")
 
     query = request.form["query"]
-    r = search(query)
+    r = queries.search(query)
     return render_template("search.html", searched=True, reviews=r, query=query)
 
 

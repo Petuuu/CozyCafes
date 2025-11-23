@@ -52,6 +52,7 @@ def search(q):
         SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
         FROM Reviews R
         JOIN Users U ON U.id = R.user
+        WHERE R.date_created || ' ' || R.cafe || ' ' || R.rating || '/5 ' || R.review_text || ' ' || R.date_created LIKE ?
         ORDER BY R.date_created
         """,
         ["%" + q + "%"],
