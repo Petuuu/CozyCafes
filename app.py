@@ -193,7 +193,32 @@ def edit_item(id):
     return redirect("/")
 
 
-@app.route("/delete_item/<int:review_id>", methods=["POST"])
-def delete_item(review_id):
-    db.execute("DELETE FROM Reviews WHERE id = ?", [review_id])
+@app.route("/delete_item/<int:id>", methods=["POST"])
+def delete_item(id):
+    db.execute("DELETE FROM Reviews WHERE id = ?", [id])
     return redirect("/")
+
+
+@app.route("/comments/<int:id>", methods=["GET", "POST"])
+def comments(id):
+    r = queries.fetch_review(id)
+    check_exists(r)
+
+    if request.method == "GET":
+        c = queries.search_comments(id)
+        return render_template("comments.html", r=r[0], coms=c)
+
+    db.execute(
+        """
+        INSERT INTO Comments (review, user, comment, date_created)
+        VALUES (?, ?, ?, ?)
+        """,
+        [
+            id,
+            session["id"],
+            request.form["comment"],
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+        ],
+    )
+    c = queries.search_comments(id)
+    return render_template("comments.html", r=r[0], coms=c)

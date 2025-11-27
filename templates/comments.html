@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Review by {{ r['username'] }} — {{ r['cafe'] }} </title>
+    <link rel="stylesheet" href="../static/main.css" />
+</head>
+
+<body>
+    <h1>
+        <em><a href="/profile/{{ r['user']}}">{{ r['username'] }}</a></em>'s
+        review of
+        <em>{{ r['cafe'] }}</em>
+    </h1>
+
+    <hr />
+
+    {% for c in coms %}
+        <p class="uname"><a href="/profile/{{ c['user']}}"> {{ c['username'] }} </a></p>
+        <p class="time"> {{ c['date_created']}} </p>
+
+        <br /><div>{{ c['comment'] }}</div>
+
+        <hr />
+    {% endfor %}
+
+    {% if session %}
+        <h2> Add comment </h2>
+        <br />
+
+        <form action="/comments/{{ r['id'] }}" method="post">
+            <textarea id="comment" name="comment" rows="10" cols="40" placeholder="Write comment here..."></textarea><br />
+            <input type="submit" value="Submit" />
+        </form>
+    {% endif %}
+
+    <p><a href="/"> Back </a></p>
+</body>
+
+</html>
