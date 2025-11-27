@@ -42,7 +42,7 @@
                     <div class="text">{{ r['review_text'] }}</div>
                     {% endif %}
 
-                    <a href="/comments/{{ r['id'] }}"> Comments </a>
+                    <a href="/comments/{{ r['id'] }}"> Comments ({{ r['count'] }})</a>
 
                     {% if session['id'] == r['user'] %}
                         | <a href="/edit_item/{{ r['id'] }}"> Edit </a>

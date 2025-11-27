@@ -4,9 +4,12 @@ from db import query
 def search_reviews():
     return query(
         """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited,
+            COUNT(C.id) AS count
         FROM Reviews R
         JOIN Users U ON U.id = R.user
+        LEFT JOIN Comments C ON C.review = R.id
+        GROUP BY R.id
         ORDER BY R.date_created DESC
         """
     )
@@ -15,10 +18,13 @@ def search_reviews():
 def search_user_reviews(id):
     return query(
         """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited,
+            COUNT(C.id) AS count
         FROM Reviews R
         JOIN Users U ON U.id = R.user
+        LEFT JOIN Comments C ON C.review = R.id
         WHERE R.user = ?
+        GROUP BY R.id
         ORDER BY R.date_created DESC
         """,
         [id],
@@ -28,10 +34,13 @@ def search_user_reviews(id):
 def search(q):
     return query(
         """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text, R.date_created, R.date_edited,
+            COUNT(C.id) AS count
         FROM Reviews R
         JOIN Users U ON U.id = R.user
+        LEFT JOIN Comments C ON C.review = R.id
         WHERE R.date_created || ' ' || R.cafe || ' ' || R.rating || '/5 ' || R.review_text || ' ' || R.date_created LIKE ?
+        GROUP BY R.id
         ORDER BY R.date_created
         """,
         ["%" + q + "%"],
