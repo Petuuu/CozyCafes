@@ -21,6 +21,13 @@
 
         <br /><div>{{ c['comment'] }}</div>
 
+        {% if session['id'] == c['user'] %}
+            <br />
+            <form action="/delete_comment/{{ c['id'] }}" method="post">
+                <button type="submit"> Delete </button>
+            </form>
+        {% endif %}
+
         <hr />
     {% endfor %}
 
@@ -29,6 +36,7 @@
         <br />
 
         <form action="/comments/{{ r['id'] }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}" />
             <textarea id="comment" name="comment" rows="10" cols="40" placeholder="Write comment here..."></textarea><br />
             <input type="submit" value="Submit" />
         </form>

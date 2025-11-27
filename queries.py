@@ -63,9 +63,10 @@ def fetch_review(id):
 
 def fetch_user(id):
     return query(
-        """
-        SELECT id, username, pfp
-        FROM Users
-        WHERE id = ?""",
+        "SELECT id, username, pfp FROM Users WHERE id = ?",
         [id],
     )
+
+
+def fetch_comment_section(id):
+    return query("SELECT review, user FROM Comments WHERE id = ?", [id])

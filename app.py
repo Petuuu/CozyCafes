@@ -195,7 +195,12 @@ def edit_item(id):
 
 @app.route("/delete_item/<int:id>", methods=["POST"])
 def delete_item(id):
+    r = queries.fetch_review(id)
+    check_exists(r)
+    check_allowed(r)
+
     db.execute("DELETE FROM Reviews WHERE id = ?", [id])
+
     return redirect("/")
 
 
@@ -208,6 +213,7 @@ def comments(id):
         c = queries.search_comments(id)
         return render_template("comments.html", r=r[0], coms=c)
 
+    check_csrf()
     db.execute(
         """
         INSERT INTO Comments (review, user, comment, date_created)
@@ -220,5 +226,16 @@ def comments(id):
             datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
         ],
     )
-    c = queries.search_comments(id)
-    return render_template("comments.html", r=r[0], coms=c)
+    return redirect(f"/comments/{id}")
+
+
+@app.route("/delete_comment/<int:id>", methods=["POST"])
+def delete_comment(id):
+    r = queries.fetch_comment_section(id)
+    check_exists(r)
+    check_allowed(r)
+
+    r_id = r[0]["review"]
+    db.execute("DELETE FROM Comments WHERE id = ?", [id])
+
+    return redirect(f"/comments/{r_id}")
