@@ -36,6 +36,34 @@
         <label for="text"> Review text: </label><br />
         <textarea id="text" name="text" rows="10" cols="40" placeholder="Write text here...">{{ r['review_text'] }}</textarea><br ><br />
 
+        <input id="cat1" value="Quiet atmosphere" name="categories" type="checkbox"
+            {% if r['categories'] and 'Quiet atmosphere' in r['categories'] %}checked{% endif %} />
+        <label for="cat1"> Quiet atmosphere </label><br />
+
+        <input id="cat2" value="Budget friendly" name="categories" type="checkbox"
+            {% if r['categories'] and 'Budget friendly' in r['categories'] %}checked{% endif %} />
+        <label for="cat2"> Budget friendly </label><br />
+
+        <input id="cat3" value="Friendly staff" name="categories" type="checkbox"
+            {% if r['categories'] and 'Friendly staff' in r['categories'] %}checked{% endif %} />
+        <label for="cat3"> Friendly staff </label><br />
+
+        <input id="cat4" value="Spacious" name="categories" type="checkbox"
+            {% if r['categories'] and 'Spacious' in r['categories'] %}checked{% endif %} />
+        <label for="cat4"> Spacious </label><br />
+
+        <input id="cat5" value="Games" name="categories" type="checkbox"
+            {% if r['categories'] and 'Games' in r['categories'] %}checked{% endif %} />
+        <label for="cat5"> Games </label><br />
+
+        <input id="cat6" value="Free Wi-Fi" name="categories" type="checkbox"
+            {% if r['categories'] and 'Free Wi-Fi' in r['categories'] %}checked{% endif %} />
+        <label for="cat6"> Free Wi-Fi </label><br />
+
+        <input id="cat7" value="Cozy lighting" name="categories" type="checkbox"
+            {% if r['categories'] and 'Cozy lighting' in r['categories'] %}checked{% endif %} />
+        <label for="cat7"> Cozy lighting </label><br /><br />
+
         <button type="submit" formaction="/edit_item/{{ r['id'] }}"> Submit </button>
         <button type="submit" formaction="/delete_item/{{ r['id'] }}"> Delete </button>
     </form>

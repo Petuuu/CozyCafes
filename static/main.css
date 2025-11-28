@@ -13,6 +13,26 @@
     width: 19vw;
 }
 
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5vw;
+    align-items: center;
+
+    overflow: auto;
+    height: 4vw;
+    margin-bottom: 1vw;
+}
+
+.category {
+    background-color: lightgray;
+    border: 0.08vw solid black;
+    border-radius: 0.7vw;
+    padding: 0.3vw 0.3vw;
+    margin: 0;
+    font-size: 0.8vw;
+}
+
 .uname {
     font-size: 1.1vw;
     font-style: italic;

@@ -10,6 +10,7 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from secrets import token_hex
+from json import dumps, loads
 from datetime import datetime
 import sqlite3
 import config
@@ -37,8 +38,14 @@ def check_csrf():
 
 @app.route("/")
 def index():
-    r = queries.search_reviews()
-    return render_template("index.html", reviews=r)
+    rows = queries.search_reviews()
+    reviews = []
+
+    for r in rows:
+        review = {k: r[k] for k in r.keys()}
+        review["categories"] = loads(r["categories"]) if r["categories"] else None
+        reviews.append(review)
+    return render_template("index.html", reviews=reviews)
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -109,18 +116,20 @@ def add_item():
     cafe = request.form["cafe"]
     rating = request.form["rating"]
     text = request.form["text"]
+    categories = dumps(request.form.getlist("categories"))
 
     db.execute(
         """
         INSERT INTO
-        Reviews (cafe, user, rating, review_text, date_created)
-        VALUES (?, ?, ?, ?, ?)
+        Reviews (cafe, user, rating, review_text, categories, date_created)
+        VALUES (?, ?, ?, ?, ?, ?)
         """,
         [
             cafe,
             session["id"],
             rating,
             text,
+            categories,
             datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
         ],
     )
@@ -133,8 +142,15 @@ def search():
         return render_template("search.html")
 
     query = request.form["query"]
-    r = queries.search(query)
-    return render_template("search.html", searched=True, reviews=r, query=query)
+    rows = queries.search(query)
+
+    reviews = []
+    for r in rows:
+        review = {k: r[k] for k in r.keys()}
+        review["categories"] = loads(r["categories"]) if r["categories"] else None
+        reviews.append(review)
+
+    return render_template("search.html", searched=True, reviews=reviews, query=query)
 
 
 @app.route("/add_image", methods=["POST"])
@@ -166,8 +182,17 @@ def show_image(user):
 def profile(user, error=None):
     u = queries.fetch_user(user)
     check_exists(u)
-    r = queries.search_user_reviews(user)
-    return render_template("profile.html", u=u[0], reviews=r, c=len(r), error=error)
+    rows = queries.search_user_reviews(user)
+
+    reviews = []
+    for r in rows:
+        review = {k: r[k] for k in r.keys()}
+        review["categories"] = loads(r["categories"]) if r["categories"] else None
+        reviews.append(review)
+
+    return render_template(
+        "profile.html", u=u[0], reviews=reviews, c=len(rows), error=error
+    )
 
 
 @app.route("/edit_item/<int:id>", methods=["GET", "POST"])
@@ -176,19 +201,32 @@ def edit_item(id):
         r = queries.fetch_review(id)
         check_exists(r)
         check_allowed(r)
-        return render_template("edit.html", r=r[0])
+
+        row = r[0]
+        review = {k: row[k] for k in row.keys()}
+        review["categories"] = loads(row["categories"]) if row["categories"] else None
+
+        return render_template("edit.html", r=review)
 
     cafe = request.form["cafe"]
     rating = request.form["rating"]
     text = request.form["text"]
+    categories = dumps(request.form.getlist("categories"))
 
     db.execute(
         """
         UPDATE Reviews
-        SET cafe = ?, rating = ?, review_text = ?, date_edited = ?
+        SET cafe = ?, rating = ?, review_text = ?, categories = ?, date_edited = ?
         WHERE id = ?
         """,
-        [cafe, rating, text, datetime.now().strftime("%d-%m-%Y %H:%M:%S"), id],
+        [
+            cafe,
+            rating,
+            text,
+            categories,
+            datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+            id,
+        ],
     )
     return redirect("/")
 

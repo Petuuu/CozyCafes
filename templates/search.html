@@ -39,8 +39,16 @@
                     <p class="cafe"> {{ r['cafe'] }} </p>
 
                     {% if r['review_text'] %}
-                    <div class="text">{{ r['review_text'] }}</div>
+                        <div class="text">{{ r['review_text'] }}</div>
                     {% endif %}
+
+                    <div class="categories">
+                        {% if r['categories'] %}
+                            {% for cat in r['categories'] %}
+                                <p class="category"> {{ cat }} </p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
 
                     <a href="/comments/{{ r['id'] }}"> Comments ({{ r['count'] }})</a>
 

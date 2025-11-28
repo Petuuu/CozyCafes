@@ -4,6 +4,7 @@ CREATE TABLE Reviews (
     cafe TEXT,
     rating INTEGER,
     review_text TEXT,
+    categories TEXT,
     date_created TEXT,
     date_edited TEXT
 );
