@@ -74,3 +74,9 @@
 .search-icon {
     width: 1vw;
 }
+
+.pages {
+    margin: 1vw 0;
+    text-align: center;
+    font-size: 1.3vw;
+}

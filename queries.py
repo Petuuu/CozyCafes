@@ -1,7 +1,12 @@
 from db import query
 
 
-def search_reviews():
+def search_review_count():
+    return query("SELECT COUNT(id) FROM Reviews")
+
+
+def search_page_reviews(page, page_size):
+    offset = page_size * (page - 1)
     return query(
         """
         SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text,
@@ -11,7 +16,9 @@ def search_reviews():
         LEFT JOIN Comments C ON C.review = R.id
         GROUP BY R.id
         ORDER BY R.id DESC
-        """
+        LIMIT ? OFFSET ?
+        """,
+        [page_size, offset],
     )
 
 
@@ -31,20 +38,39 @@ def search_user_reviews(user_id):
     )
 
 
-def search(q):
+def search_count(q):
     return query(
         """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text,
-            R.categories, R.date_created, R.date_edited, COUNT(C.id) AS count
+        SELECT COUNT(R.id), R.user, U.username, R.cafe, R.rating, R.review_text,
+            R.categories, R.date_created
         FROM Reviews R
         JOIN Users U ON U.id = R.user
         LEFT JOIN Comments C ON C.review = R.id
         WHERE R.date_created || ' ' || R.cafe || ' ' || R.rating || '/5 '
-            || R.review_text || ' ' || R.date_created LIKE ?
+            || R.review_text || ' ' || R.date_created || U.username || R.categories LIKE ?
         GROUP BY R.id
         ORDER BY R.id DESC
         """,
         ["%" + q + "%"],
+    )
+
+
+def search_page(q, page, page_size):
+    offset = page_size * (page - 1)
+    return query(
+        """
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text,
+            R.categories, R.date_created, COUNT(C.id) AS count
+        FROM Reviews R
+        JOIN Users U ON U.id = R.user
+        LEFT JOIN Comments C ON C.review = R.id
+        WHERE R.date_created || ' ' || R.cafe || ' ' || R.rating || '/5 '
+            || R.review_text || ' ' || R.date_created || U.username || R.categories LIKE ?
+        GROUP BY R.id
+        ORDER BY R.id DESC
+        LIMIT ? OFFSET ?
+        """,
+        ["%" + q + "%", page_size, offset],
     )
 
 

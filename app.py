@@ -1,4 +1,5 @@
 from datetime import datetime
+from math import ceil
 import sqlite3
 from secrets import token_hex
 from json import dumps, loads
@@ -19,6 +20,7 @@ import queries
 
 app = Flask(__name__)
 app.secret_key = config.SECRECT_KEY
+page_size = 8
 
 
 def check_exists(r):
@@ -37,15 +39,26 @@ def check_csrf():
 
 
 @app.route("/")
-def index():
-    rows = queries.search_reviews()
-    reviews = []
+@app.route("/<int:page>")
+def index(page=1):
+    rows = queries.search_review_count()[0][0]
+    page_count = ceil(rows / page_size) if rows else 1
+    rows = queries.search_page_reviews(page, page_size)
 
+    if page < 1:
+        return redirect("/1")
+    elif page > page_count:
+        return redirect(f"/{page_count}")
+
+    reviews = []
     for r in rows:
         review = {k: r[k] for k in r.keys()}
         review["categories"] = loads(r["categories"]) if r["categories"] else None
         reviews.append(review)
-    return render_template("index.html", reviews=reviews)
+
+    return render_template(
+        "index.html", page=page, page_count=page_count, reviews=reviews
+    )
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -136,12 +149,26 @@ def add_item():
 
 
 @app.route("/search", methods=["GET", "POST"])
-def search():
+@app.route("/search/<int:page>", methods=["POST"])
+def search(page=1):
     if request.method == "GET":
         return render_template("search.html")
 
     query = request.form["query"]
-    rows = queries.search(query)
+
+    if query == "":
+        rows = queries.search_review_count()[0][0]
+        page_count = ceil(rows / page_size) if rows else 1
+        rows = queries.search_page_reviews(page, page_size)
+    else:
+        rows = queries.search_page(query, page, page_size)[0][0]
+        page_count = ceil(rows / page_size) if rows else 1
+        rows = queries.search_page(query, page, page_size)
+
+    if page < 1:
+        return redirect("search/1")
+    elif page > page_count:
+        return redirect(f"search/{page_count}")
 
     reviews = []
     for r in rows:
@@ -149,7 +176,14 @@ def search():
         review["categories"] = loads(r["categories"]) if r["categories"] else None
         reviews.append(review)
 
-    return render_template("search.html", searched=True, reviews=reviews, query=query)
+    return render_template(
+        "search.html",
+        page=page,
+        page_count=page_count,
+        searched=True,
+        reviews=reviews,
+        query=query,
+    )
 
 
 @app.route("/add_image", methods=["POST"])
