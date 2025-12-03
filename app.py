@@ -1,3 +1,7 @@
+from datetime import datetime
+import sqlite3
+from secrets import token_hex
+from json import dumps, loads
 from flask import (
     Flask,
     request,
@@ -9,16 +13,12 @@ from flask import (
     make_response,
 )
 from werkzeug.security import generate_password_hash, check_password_hash
-from secrets import token_hex
-from json import dumps, loads
-from datetime import datetime
-import sqlite3
 import config
 import db
 import queries
 
 app = Flask(__name__)
-app.secret_key = config.secret_key
+app.secret_key = config.SECRECT_KEY
 
 
 def check_exists(r):
@@ -94,10 +94,9 @@ def login():
             session["id"] = query[0][0]
             session["csrf_token"] = token_hex(16)
             return redirect("/")
-        else:
-            raise
+        return render_template("login.html", error=True)
 
-    except:
+    except IndexError:
         return render_template("login.html", error=True)
 
 
@@ -159,11 +158,11 @@ def image():
     if not f.filename.endswith(".jpg"):
         return profile(session["id"], error="ERROR: incorrect file type")
 
-    image = f.read()
-    if len(image) > 100 * 1024:
+    img = f.read()
+    if len(img) > 100 * 1024:
         return profile(session["id"], error="ERROR: image too large")
 
-    db.execute("UPDATE Users SET pfp = ? WHERE id = ?", [image, session["id"]])
+    db.execute("UPDATE Users SET pfp = ? WHERE id = ?", [img, session["id"]])
     return profile(session["id"])
 
 
@@ -195,10 +194,10 @@ def profile(user, error=None):
     )
 
 
-@app.route("/edit_item/<int:id>", methods=["GET", "POST"])
-def edit_item(id):
+@app.route("/edit_item/<int:review_id>", methods=["GET", "POST"])
+def edit_item(review_id):
     if request.method == "GET":
-        r = queries.fetch_review(id)
+        r = queries.fetch_review(review_id)
         check_exists(r)
         check_allowed(r)
 
@@ -225,30 +224,30 @@ def edit_item(id):
             text,
             categories,
             datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
-            id,
+            review_id,
         ],
     )
     return redirect("/")
 
 
-@app.route("/delete_item/<int:id>", methods=["POST"])
-def delete_item(id):
-    r = queries.fetch_review(id)
+@app.route("/delete_item/<int:review_id>", methods=["POST"])
+def delete_item(review_id):
+    r = queries.fetch_review(review_id)
     check_exists(r)
     check_allowed(r)
 
-    db.execute("DELETE FROM Reviews WHERE id = ?", [id])
+    db.execute("DELETE FROM Reviews WHERE id = ?", [review_id])
 
     return redirect("/")
 
 
-@app.route("/comments/<int:id>", methods=["GET", "POST"])
-def comments(id):
-    r = queries.fetch_review(id)
+@app.route("/comments/<int:comm_id>", methods=["GET", "POST"])
+def comments(comm_id):
+    r = queries.fetch_review(comm_id)
     check_exists(r)
 
     if request.method == "GET":
-        c = queries.search_comments(id)
+        c = queries.search_comments(comm_id)
         return render_template("comments.html", r=r[0], coms=c)
 
     check_csrf()
@@ -258,22 +257,22 @@ def comments(id):
         VALUES (?, ?, ?, ?)
         """,
         [
-            id,
+            comm_id,
             session["id"],
             request.form["comment"],
             datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
         ],
     )
-    return redirect(f"/comments/{id}")
+    return redirect(f"/comments/{comm_id}")
 
 
-@app.route("/delete_comment/<int:id>", methods=["POST"])
-def delete_comment(id):
-    r = queries.fetch_comment_section(id)
+@app.route("/delete_comment/<int:comm_id>", methods=["POST"])
+def delete_comment(comm_id):
+    r = queries.fetch_comment_section(comm_id)
     check_exists(r)
     check_allowed(r)
 
     r_id = r[0]["review"]
-    db.execute("DELETE FROM Comments WHERE id = ?", [id])
+    db.execute("DELETE FROM Comments WHERE id = ?", [comm_id])
 
     return redirect(f"/comments/{r_id}")

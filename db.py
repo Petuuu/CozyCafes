@@ -13,16 +13,20 @@ def last_insert_id():
     return g.last_insert_id
 
 
-def execute(query, params=[]):
+def execute(q, params=None):
+    params = [] if not params else params
+
     db = get_connection()
-    r = db.execute(query, params)
+    r = db.execute(q, params)
     db.commit()
     g.last_insert_id = r.lastrowid
     db.close()
 
 
-def query(query, params=[]):
+def query(q, params=None):
+    params = [] if not params else params
+
     db = get_connection()
-    r = db.execute(query, params).fetchall()
+    r = db.execute(q, params).fetchall()
     db.close()
     return r
