@@ -10,7 +10,7 @@ def search_reviews():
         JOIN Users U ON U.id = R.user
         LEFT JOIN Comments C ON C.review = R.id
         GROUP BY R.id
-        ORDER BY R.date_created DESC
+        ORDER BY R.id DESC
         """
     )
 
@@ -25,7 +25,7 @@ def search_user_reviews(user_id):
         LEFT JOIN Comments C ON C.review = R.id
         WHERE R.user = ?
         GROUP BY R.id
-        ORDER BY R.date_created DESC
+        ORDER BY R.id DESC
         """,
         [user_id],
     )
@@ -42,7 +42,7 @@ def search(q):
         WHERE R.date_created || ' ' || R.cafe || ' ' || R.rating || '/5 '
             || R.review_text || ' ' || R.date_created LIKE ?
         GROUP BY R.id
-        ORDER BY R.date_created
+        ORDER BY R.id DESC
         """,
         ["%" + q + "%"],
     )
