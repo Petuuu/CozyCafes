@@ -43,14 +43,15 @@ def check_csrf():
 def index(page=1):
     rows = queries.search_review_count()[0][0]
     page_count = ceil(rows / page_size) if rows else 1
-    rows = queries.search_page_reviews(page, page_size)
 
     if page < 1:
         return redirect("/1")
     elif page > page_count:
         return redirect(f"/{page_count}")
 
+    rows = queries.search_page_reviews(page, page_size)
     reviews = []
+
     for r in rows:
         review = {k: r[k] for k in r.keys()}
         review["categories"] = loads(r["categories"]) if r["categories"] else None
@@ -149,26 +150,12 @@ def add_item():
 
 
 @app.route("/search", methods=["GET", "POST"])
-@app.route("/search/<int:page>", methods=["POST"])
-def search(page=1):
+def search():
     if request.method == "GET":
         return render_template("search.html")
 
     query = request.form["query"]
-
-    if query == "":
-        rows = queries.search_review_count()[0][0]
-        page_count = ceil(rows / page_size) if rows else 1
-        rows = queries.search_page_reviews(page, page_size)
-    else:
-        rows = queries.search_page(query, page, page_size)[0][0]
-        page_count = ceil(rows / page_size) if rows else 1
-        rows = queries.search_page(query, page, page_size)
-
-    if page < 1:
-        return redirect("search/1")
-    elif page > page_count:
-        return redirect(f"search/{page_count}")
+    rows = queries.search(query)
 
     reviews = []
     for r in rows:
@@ -176,14 +163,7 @@ def search(page=1):
         review["categories"] = loads(r["categories"]) if r["categories"] else None
         reviews.append(review)
 
-    return render_template(
-        "search.html",
-        page=page,
-        page_count=page_count,
-        searched=True,
-        reviews=reviews,
-        query=query,
-    )
+    return render_template("search.html", searched=True, reviews=reviews, query=query)
 
 
 @app.route("/add_image", methods=["POST"])
