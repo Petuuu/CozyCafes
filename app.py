@@ -60,7 +60,7 @@ def index(page=1):
 
     if page < 1:
         return redirect("/1")
-    elif page > page_count:
+    if page > page_count:
         return redirect(f"/{page_count}")
 
     rows = queries.search_page_reviews(page, page_size)

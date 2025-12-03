@@ -38,7 +38,7 @@ def search_user_reviews(user_id):
     )
 
 
-def search_page(q):
+def search(q):
     return query(
         """
         SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text,
