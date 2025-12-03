@@ -37,5 +37,7 @@ $ flask run
 ```
 
 
-## Handling large amounts of data
-File `seed.py` add 1000 users, 100 000 reviews, and a million comments total. Before creating indexes to the database, changing pages on the home screen took from 0.7 to 0.9 seconds on average.
+## Handling large data
+File `seed.py` add 1000 users, 100 000 reviews, and a million comments total. Before creating indices to the database, changing pages on the home screen took from 0.7 to 0.9 seconds on average. After adding indices, this takes at most 0.02 seconds.
+
+Even when changing the amount of reviews to a million and comments to 10 million, the time to change pages takes only 0.03 to 0.04 seconds. Without the indices, this would take roughly 17 to 19 seconds.
