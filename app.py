@@ -1,3 +1,4 @@
+from time import time
 from datetime import datetime
 from math import ceil
 import sqlite3
@@ -7,6 +8,7 @@ from flask import (
     Flask,
     request,
     session,
+    g,
     render_template,
     redirect,
     abort,
@@ -20,7 +22,7 @@ import queries
 
 app = Flask(__name__)
 app.secret_key = config.SECRECT_KEY
-page_size = 8
+page_size = 12
 
 
 def check_exists(r):
@@ -36,6 +38,18 @@ def check_allowed(r):
 def check_csrf():
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
+
+
+@app.before_request
+def before_request():
+    g.start = time()
+
+
+@app.after_request
+def after_request(response):
+    elapsed = round(time() - g.start, 2)
+    print("elapsed time:", elapsed, "s")
+    return response
 
 
 @app.route("/")
