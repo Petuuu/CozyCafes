@@ -23,3 +23,7 @@ CREATE TABLE Users (
     password_hash TEXT,
     pfp BLOB
 );
+
+CREATE INDEX idx_reviews_user ON Reviews (user);
+CREATE INDEX idx_comments_review on Comments (review);
+CREATE INDEX idx_comments_user on Comments (user);
