@@ -22,6 +22,20 @@ def search_page_reviews(page, page_size):
     )
 
 
+def search_all():
+    return query(
+        """
+        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text,
+            R.categories, R.date_created, R.date_edited, COUNT(C.id) AS count
+        FROM Reviews R
+        JOIN Users U ON U.id = R.user
+        LEFT JOIN Comments C ON C.review = R.id
+        GROUP BY R.id
+        ORDER BY R.id DESC
+        """
+    )
+
+
 def search_user_reviews(user_id):
     return query(
         """

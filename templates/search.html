@@ -11,7 +11,7 @@
 
 
 	<form class="search" method="post">
-        <img class="search-icon" src="static/images/search.png" alt="Search icon" />
+        <img class="search-icon" src="static/Images/search.png" alt="Search icon" />
         <input id="query" name="query" type="text" placeholder="Search..." />
 		<button type="submit" formaction="/search"> Search </button><br />
 	</form>
@@ -60,12 +60,6 @@
                 <p> No reviews found </p>
             {% endfor %}
 	    </div>
-
-        <p class="pages">
-            <a href="/{{ page - 1 }}"> &lt;&lt; </a>
-            Page {{ page }}/{{ page_count }}
-            <a href="/{{ page + 1 }}"> &gt;&gt; </a>
-        </p>
     {% else %}
         <h2> Results </h2>
         <em> Click the search button to display results </em>

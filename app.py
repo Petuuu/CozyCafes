@@ -100,7 +100,7 @@ def create():
         return render_template("create.html", error="ERROR: username already exists")
 
     flash("Account successfully created")
-    return redirect("/")
+    return render_template("login.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -169,7 +169,11 @@ def search():
         return render_template("search.html")
 
     query = request.form["query"]
-    rows = queries.search(query)
+
+    if query == "":
+        rows = queries.search_all()
+    else:
+        rows = queries.search(query)
 
     reviews = []
     for r in rows:
@@ -264,6 +268,7 @@ def delete_item(review_id):
     check_exists(r)
     check_allowed(r)
 
+    db.execute("DELETE FROM Comments WHERE review = ?", [review_id])
     db.execute("DELETE FROM Reviews WHERE id = ?", [review_id])
 
     return redirect("/")
