@@ -7,82 +7,86 @@
 </head>
 
 <body>
-    <h1> {{ u["username"] }}'s profile </h1>
+	<header>
+		<h1> {{ u["username"] }}'s profile </h1>
 
-    {% if c == 0 %}
-        <p> User has shared {{ c }} reviews </p>
-    {% elif c == 1 %}
-        <p> User has shared {{ c }} review </p>
-        <p> Review was given {{ reviews[0]["date_created"] }} </p>
-    {% else %}
-        <p> User has shared {{ c }} reviews </p>
-        <p> First review was given {{ reviews[-1]["date_created"] }} </p>
-        <p> Last review was given {{ reviews[0]["date_created"] }} </p>
-    {% endif %}
+		{% if c == 0 %}
+			<p> User has shared {{ c }} reviews </p>
+		{% elif c == 1 %}
+			<p> User has shared {{ c }} review </p>
+			<p> Review was given {{ reviews[0]["date_created"] }} </p>
+		{% else %}
+			<p> User has shared {{ c }} reviews </p>
+			<p> First review was given {{ reviews[-1]["date_created"] }} </p>
+			<p> Last review was given {{ reviews[0]["date_created"] }} </p>
+		{% endif %}
 
-	{% if u["pfp"] %}
-		<br /><img src="/image/{{ u['id'] }}" alt="Profile picture" height="400vw" width="auto" />
-	{% endif %}
+		{% if u["pfp"] %}
+			<br /><img src="/image/{{ u['id'] }}" alt="Profile picture" height="400vw" width="auto" />
+		{% endif %}
 
-	{% if session and u["id"] == session["id"] %}
-		<br /><p> Add a jpg file (max size 100 kB) </p>
+		{% if session and u["id"] == session["id"] %}
+			<br /><p> Add a jpg file (max size 100 kB) </p>
 
-		<form action="/add_image" method="post" enctype="multipart/form-data">
-			<label for="image"> Profile picture: </label>
-			<input id="image" name="image" type="file" accept=".jpg" /><br /><br />
-			<button type="submit"> Add </button>
-		</form>
-	{% endif %}
+			<form action="/add_image" method="post" enctype="multipart/form-data">
+				<label for="image"> Profile picture: </label>
+				<input id="image" name="image" type="file" accept=".jpg" /><br /><br />
+				<button type="submit"> Add </button>
+			</form>
+		{% endif %}
 
-	{% if error %}
-		<p style="color: red;"> {{ error }} </p>
-	{% endif %}
+		{% if error %}
+			<p style="color: red;"> {{ error }} </p>
+		{% endif %}
 
-	<p><a href="/"> Back </a></p>
+		<p><a href="/"> Back </a></p>
+	</header>
 
     <hr />
 
-	<h2> Reviews </h2>
+	<main>
+		<h2> Reviews </h2>
 
-	<div class="review-container">
+		<div class="review-container">
 
-		{% for r in reviews %}
-			<div class="review">
-				<p class="uname"><a href="/profile/{{ r['user']}}"> {{ r['username'] }} </a></p>
-				<p class="time"> {{ r['date_created']}} </p>
+			{% for r in reviews %}
+				<div class="review">
+					<p class="uname"><a href="/profile/{{ r['user']}}"> {{ r['username'] }} </a></p>
+					<p class="time"> {{ r['date_created']}} </p>
 
-				{% if r['date_edited'] %}
-					<p class="time"> Last edited: {{ r['date_edited'] }} </p>
-				{% endif %}
+					{% if r['date_edited'] %}
+						<p class="time"> Last edited: {{ r['date_edited'] }} </p>
+					{% endif %}
 
-				<hr />
+					<hr />
 
-				<p> Rating: {{ r['rating'] }}/5 </p>
-				<p class="cafe"> {{ r['cafe'] }} </p>
+					<p> Rating: {{ r['rating'] }}/5 </p>
+					<p class="cafe"> {{ r['cafe'] }} </p>
 
-				{% if r['review_text'] %}
-					<div class="text">{{ r['review_text'] }}</div>
-				{% endif %}
+					{% if r['review_text'] %}
+						<div class="text">{{ r['review_text'] }}</div>
+					{% endif %}
 
-				<div class="categories">
-					{% if r['categories'] %}
-						{% for cat in r['categories'] %}
-							<p class="category"> {{ cat }} </p>
-						{% endfor %}
+					<div class="categories">
+						{% if r['categories'] %}
+							{% for cat in r['categories'] %}
+								<p class="category"> {{ cat }} </p>
+							{% endfor %}
+						{% endif %}
+					</div>
+
+					<a href="/comments/{{ r['id'] }}"> Comments ({{ r['count'] }})</a>
+
+					{% if session['id'] == r['user'] %}
+						| <a href="/edit_item/{{ r['id'] }}"> Edit </a>
 					{% endif %}
 				</div>
+			{% else %}
+				<p> No reviews yet </p>
+			{% endfor %}
 
-				<a href="/comments/{{ r['id'] }}"> Comments ({{ r['count'] }})</a>
-
-				{% if session['id'] == r['user'] %}
-					| <a href="/edit_item/{{ r['id'] }}"> Edit </a>
-				{% endif %}
-			</div>
-		{% else %}
-			<p> No reviews yet </p>
-		{% endfor %}
-
-	</div>
+		</div>
+	</main>
 
 </body>
 

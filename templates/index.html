@@ -7,32 +7,34 @@
 </head>
 
 <body>
-	<h1> Home </h1>
-	<p>
-		<b> Welcome </b> to <i> Cozy Cafés</i>!
-	</p>
-
-	{% if session %}
-		<p> Signed in on user {{ session["uname"] }} </p>
+	<header>
+		<h1> Home </h1>
 		<p>
-			<a href="/logout"> Logout </a> |
-			<a href="/profile/{{ session.id }}"> Profile </a>
+			<b> Welcome </b> to <i> Cozy Cafés</i>!
 		</p>
 
-		<form method="get">
-			<button type="submit" formaction="/add_item"> Add review </button>
-			<button type="submit" formaction="/search"> Search reviews </button>
-		</form>
-	{% else %}
-		<p>
-			<a href="/create"> Create account </a> |
-			<a href="/login"> Login </a>
-		</p>
+		{% if session %}
+			<p> Signed in on user {{ session["uname"] }} </p>
+			<p>
+				<a href="/logout"> Logout </a> |
+				<a href="/profile/{{ session.id }}"> Profile </a>
+			</p>
 
-		<form method="get">
-			<button type="submit" formaction="/search"> Search reviews </button>
-		</form>
-	{% endif %}
+			<form method="get">
+				<button type="submit" formaction="/add_item"> Add review </button>
+				<button type="submit" formaction="/search"> Search reviews </button>
+			</form>
+		{% else %}
+			<p>
+				<a href="/create"> Create account </a> |
+				<a href="/login"> Login </a>
+			</p>
+
+			<form method="get">
+				<button type="submit" formaction="/search"> Search reviews </button>
+			</form>
+		{% endif %}
+	</header>
 
 	{% with messages = get_flashed_messages() %}
 		{% if messages %}
@@ -42,53 +44,55 @@
 
 	<hr />
 
-	<h2> Reviews </h2>
+	<main>
+		<h2> Reviews </h2>
 
-	<div class="review-container">
+		<div class="review-container">
 
-		{% for r in reviews %}
-			<div class="review">
-				<p class="uname"><a href="/profile/{{ r['user']}}"> {{ r['username'] }} </a></p>
-				<p class="time"> {{ r['date_created']}} </p>
+			{% for r in reviews %}
+				<div class="review">
+					<p class="uname"><a href="/profile/{{ r['user']}}"> {{ r['username'] }} </a></p>
+					<p class="time"> {{ r['date_created']}} </p>
 
-				{% if r['date_edited'] %}
-					<p class="time"> Last edited: {{ r['date_edited'] }} </p>
-				{% endif %}
+					{% if r['date_edited'] %}
+						<p class="time"> Last edited: {{ r['date_edited'] }} </p>
+					{% endif %}
 
-				<hr />
+					<hr />
 
-				<p> Rating: {{ r['rating'] }}/5 </p>
-				<p class="cafe"> {{ r['cafe'] }} </p>
+					<p> Rating: {{ r['rating'] }}/5 </p>
+					<p class="cafe"> {{ r['cafe'] }} </p>
 
-				{% if r['review_text'] %}
-					<div class="text">{{ r['review_text'] }}</div>
-				{% endif %}
+					{% if r['review_text'] %}
+						<div class="text">{{ r['review_text'] }}</div>
+					{% endif %}
 
-				<div class="categories">
-					{% if r['categories'] %}
-						{% for cat in r['categories'] %}
-							<p class="category"> {{ cat }} </p>
-						{% endfor %}
+					<div class="categories">
+						{% if r['categories'] %}
+							{% for cat in r['categories'] %}
+								<p class="category"> {{ cat }} </p>
+							{% endfor %}
+						{% endif %}
+					</div>
+
+					<a href="/comments/{{ r['id'] }}"> Comments ({{ r['count'] }})</a>
+
+					{% if session['id'] == r['user'] %}
+						| <a href="/edit_item/{{ r['id'] }}"> Edit </a>
 					{% endif %}
 				</div>
+			{% else %}
+				<p> No reviews yet </p>
+			{% endfor %}
 
-				<a href="/comments/{{ r['id'] }}"> Comments ({{ r['count'] }})</a>
+		</div>
 
-				{% if session['id'] == r['user'] %}
-					| <a href="/edit_item/{{ r['id'] }}"> Edit </a>
-				{% endif %}
-			</div>
-		{% else %}
-			<p> No reviews yet </p>
-		{% endfor %}
-
-	</div>
-
-	<p class="pages">
-		<a href="/{{ page - 1 }}"> &lt;&lt; </a>
-		Page {{ page }}/{{ page_count }}
-		<a href="/{{ page + 1 }}"> &gt;&gt; </a>
-	</p>
+		<p class="pages">
+			<a href="/{{ page - 1 }}"> &lt;&lt; </a>
+			Page {{ page }}/{{ page_count }}
+			<a href="/{{ page + 1 }}"> &gt;&gt; </a>
+		</p>
+	</main>
 </body>
 
 </html>

@@ -1,9 +1,27 @@
+body {
+    background-color: rgb(222, 247, 233);
+    margin: 2vw 12vw;
+}
+
+header {
+    background-color: rgb(214, 214, 214);
+    padding: 1vw;
+    border-radius: 1.2vw;
+}
+
+main {
+    background-color: azure;
+    padding: 1vw;
+    border-radius: 1.2vw;
+}
+
 .review-container {
     display: flex;
     flex-wrap: wrap;
 }
 
 .review {
+    background-color: rgb(226, 244, 236);
     border: 0.1vw solid rgb(81, 81, 81);
     border-radius: 1.5vw;
 
