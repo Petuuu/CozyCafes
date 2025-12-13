@@ -9,10 +9,11 @@ def search_page_reviews(page, page_size):
     offset = page_size * (page - 1)
     return query(
         """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text,
+        SELECT R.id, R.user, IFNULL(U.username, '[deleted]') AS username,
+            R.cafe, R.rating, R.review_text,
             R.categories, R.date_created, R.date_edited, COUNT(C.id) AS count
         FROM Reviews R
-        JOIN Users U ON U.id = R.user
+        LEFT JOIN Users U ON U.id = R.user
         LEFT JOIN Comments C ON C.review = R.id
         GROUP BY R.id
         ORDER BY R.id DESC
@@ -25,10 +26,11 @@ def search_page_reviews(page, page_size):
 def search_all():
     return query(
         """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text,
+        SELECT R.id, R.user, IFNULL(U.username, '[deleted]') AS username,
+            R.cafe, R.rating, R.review_text,
             R.categories, R.date_created, R.date_edited, COUNT(C.id) AS count
         FROM Reviews R
-        JOIN Users U ON U.id = R.user
+        LEFT JOIN Users U ON U.id = R.user
         LEFT JOIN Comments C ON C.review = R.id
         GROUP BY R.id
         ORDER BY R.id DESC
@@ -55,10 +57,11 @@ def search_user_reviews(user_id):
 def search(q):
     return query(
         """
-        SELECT R.id, R.user, U.username, R.cafe, R.rating, R.review_text,
+        SELECT R.id, R.user, IFNULL(U.username, '[deleted]') AS username,
+            R.cafe, R.rating, R.review_text,
             R.categories, R.date_created, COUNT(C.id) AS count
         FROM Reviews R
-        JOIN Users U ON U.id = R.user
+        LEFT JOIN Users U ON U.id = R.user
         LEFT JOIN Comments C ON C.review = R.id
         WHERE R.date_created || ' ' || R.cafe || ' ' || R.rating || '/5 '
             || R.review_text || ' ' || R.date_created || U.username || R.categories LIKE ?
